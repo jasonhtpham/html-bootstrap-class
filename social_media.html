@@ -28,18 +28,20 @@
 
   <script>
     function createPost() {
-      let title = document.getElementById("postInput").value;
+      let title = document.getElementById("postTitleInput").value;
+      let body = document.getElementById("postBodyInput").value;
       axios({
     method: 'post',
-    url: 'https://jsonplaceholder.typicode.com/photos',
+    url: 'https://jsonplaceholder.typicode.com/posts',
     data: JSON.stringify({
     title: title,
+    body: body,
   }),
   headers: {
     'Content-type': 'application/json; charset=UTF-8',
   },
   }).then(function (response) {
-    alert(`Post created with id: ${response.data.id} & title: ${response.data.title}`);
+    alert(`Post created with id: ${response.data.id} \n Title: ${response.data.title} \n Body: ${response.data.body}`);
     })
   }
   </script>
@@ -50,45 +52,55 @@
 	<h3 class="navbar-brand" style="color: white;">My Social Media App</h3>
 </nav>
   
-<main class="container-fluid text-center">    
-  <div class="row content">
+<main>    
+  <div class="container">
    
-    <div class="col-sm-8 text-left"> 
-      <h1>Social Media App</h1>
-      <hr />
+    <div class="row justify-content-center">
       
-      <div class="form-group">
-        <label for="postInput">Post</label>
-        <input type="text" class="form-control" id="postInput" name="postInput">
+      <div class="col-sm-8 text-start"> 
+        <h1>Social Media App</h1>
+        <hr />
+        
+        <div class="mb-2">
+          <label for="postTitleInput" class="form-label">Your post title</label>
+          <input type="text" class="form-control" id="postTitleInput" placeholder="What are you thinking?">
+        </div>
+        <div class="mb-3">
+          <label for="postBodyInput" class="form-label">Your post body</label>
+          <textarea class="form-control" id="postBodyInput" rows="3" placeholder="More details..."></textarea>
+        </div>
+  
+        <button type="button" class="btn btn-primary" onclick="createPost()" id="create">Create Post</button>
+      
+      <div class="mt-5" id="posts"></div>
       </div>
 
-      <button type="button" class="btn btn-primary" onclick="createPost()" id="create">Create Post</button>
-    
-    <div id="posts"></div>
- <!-- Render a list of card using javascript-->]
- <script>
-  var list = document.querySelector('#posts');
+    </div>
 
-  axios({
-    method: 'get',
-    url: 'https://jsonplaceholder.typicode.com/photos?_limit=5'
-  })
-  .then((data) => {
-    const posts = data.data;
-    document.getElementById('posts').innerHTML = posts.map(post => 
-    `<div class="card shadow p-3 mb-5 bg-white rounded" style=" margin-left: 10;width: 18rem;">
-          <img src="${post.url}" class="card-img-top" alt="post image">
-          <div class="card-body">
-            <p class="card-text">${post.title}</p>
-          </div>
-        </div>`
-    ).join('')
-  });
-
-    
-</script>
-   
   </div>
+
+  <!-- Render a list of card using javascript-->
+  <script>
+    var list = document.querySelector('#posts');
+
+    axios({
+      method: 'get',
+      url: 'https://jsonplaceholder.typicode.com/posts?_limit=5'
+    })
+    .then((data) => {
+      const posts = data.data;
+      document.getElementById('posts').innerHTML = posts.map(post => 
+      `<div class="card shadow p-3 mb-5 bg-white rounded" style=" margin-left: 10;">
+            <div class="card-body">
+              <h5 class="card-title">${post.title}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">${post.userId}</h6>
+              <p class="card-text">${post.body}</p>
+            </div>
+          </div>`
+      ).join('')
+    });
+  </script>
+   
 </main>
 
 <footer class="container-fluid text-center fixed-bottom">
